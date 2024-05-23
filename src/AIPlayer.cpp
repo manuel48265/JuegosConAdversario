@@ -21,6 +21,66 @@ bool AIPlayer::move(){
     return true;
 }
 
+double Poda_AlfaBeta(const Parchis &actual, int jugador, int profundidad, int profundidad_max, color &c_piece, int &id_piece, int &dice, double alpha, double beta, double (*heuristic)(const Parchis &, int)){
+    if(profundidad == profundidad_max or actual.gameOver()){
+        return heuristic(actual,jugador);
+    }
+    ParchisBros hijos = actual.getChildren();
+
+    if(jugador == actual.getCurrentPlayerId()){
+         
+        for(auto it = hijos.begin(); it != hijos.end() and alpha < beta; ++it){
+
+            double aux = Poda_AlfaBeta(*it, jugador, profundidad +1, profundidad_max, c_piece, id_piece, dice, alpha, beta, heuristic);
+            if(aux > alpha){
+
+                if(profundidad == 0){
+                    c_piece = it.getMovedColor();
+                    id_piece = it.getMovedPieceId();
+                    dice = it.getMovedDiceValue();
+                }
+
+                if(beta <= alpha){
+
+                    return beta;
+                    break;
+
+                }if(profundidad == 0){
+                    c_piece = it.getMovedColor();
+                    id_piece = it.getMovedPieceId();
+                    dice = it.getMovedDiceValue();
+                }
+
+                if(beta <= alpha){
+
+                    return beta;
+                    break;
+                }
+            }
+
+        }
+
+        return alpha;
+
+    }else {
+
+        for(auto it = hijos.begin(); it != hijos.end() and alpha < beta; ++it){
+
+            double aux = Poda_AlfaBeta(*it, jugador, profundidad+1, profundidad_max, c_piece, id_piece, dice, alpha, beta, heuristic);
+            if(aux < beta){
+                beta = aux;
+
+                if(beta <= alpha){
+                    return alpha;
+                }
+            }
+        }
+
+        return beta;
+    }
+
+}
+
 void AIPlayer::think(color & c_piece, int & id_piece, int & dice) const{
     // IMPLEMENTACIÓN INICIAL DEL AGENTE
     // Esta implementación realiza un movimiento aleatorio.
@@ -63,7 +123,7 @@ void AIPlayer::think(color & c_piece, int & id_piece, int & dice) const{
         c_piece = actual->getCurrentColor(); // Le tengo que indicar mi color actual al pasar turno.
     }
 
-    /*
+    
     // El siguiente código se proporciona como sugerencia para iniciar la implementación del agente.
 
     double valor; // Almacena el valor con el que se etiqueta el estado tras el proceso de busqueda.
@@ -80,16 +140,18 @@ void AIPlayer::think(color & c_piece, int & id_piece, int & dice) const{
             valor = Poda_AlfaBeta(*actual, jugador, 0, PROFUNDIDAD_ALFABETA, c_piece, id_piece, dice, alpha, beta, ValoracionTest);
             break;
         case 1:
-            valor = Poda_AlfaBeta(*actual, jugador, 0, PROFUNDIDAD_ALFABETA, c_piece, id_piece, dice, alpha, beta, MiValoracion1);
+            //valor = Poda_AlfaBeta(*actual, jugador, 0, PROFUNDIDAD_ALFABETA, c_piece, id_piece, dice, alpha, beta, MiValoracion1);
             break;
         case 2:
-            valor = Poda_AlfaBeta(*actual, jugador, 0, PROFUNDIDAD_ALFABETA, c_piece, id_piece, dice, alpha, beta, MiValoracion2);
+            //valor = Poda_AlfaBeta(*actual, jugador, 0, PROFUNDIDAD_ALFABETA, c_piece, id_piece, dice, alpha, beta, MiValoracion2);
             break;
     }
     cout << "Valor MiniMax: " << valor << "  Accion: " << str(c_piece) << " " << id_piece << " " << dice << endl;
 
-    */
+    
 }
+
+
 
 
 
