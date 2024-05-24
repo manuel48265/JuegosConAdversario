@@ -21,10 +21,11 @@ bool AIPlayer::move(){
     return true;
 }
 
-double Poda_AlfaBeta(const Parchis &actual, int jugador, int profundidad, int profundidad_max, color &c_piece, int &id_piece, int &dice, double alpha, double beta, double (*heuristic)(const Parchis &, int)){
+double AIPlayer::Poda_AlfaBeta(const Parchis &actual, int jugador, int profundidad, int profundidad_max, color &c_piece, int &id_piece, int &dice, double alpha, double beta, double (*heuristic)(const Parchis &, int)) const{
     if(profundidad == profundidad_max or actual.gameOver()){
         return heuristic(actual,jugador);
     }
+
     ParchisBros hijos = actual.getChildren();
 
     if(jugador == actual.getCurrentPlayerId()){
@@ -33,19 +34,8 @@ double Poda_AlfaBeta(const Parchis &actual, int jugador, int profundidad, int pr
 
             double aux = Poda_AlfaBeta(*it, jugador, profundidad +1, profundidad_max, c_piece, id_piece, dice, alpha, beta, heuristic);
             if(aux > alpha){
-
+                alpha = aux; 
                 if(profundidad == 0){
-                    c_piece = it.getMovedColor();
-                    id_piece = it.getMovedPieceId();
-                    dice = it.getMovedDiceValue();
-                }
-
-                if(beta <= alpha){
-
-                    return beta;
-                    break;
-
-                }if(profundidad == 0){
                     c_piece = it.getMovedColor();
                     id_piece = it.getMovedPieceId();
                     dice = it.getMovedDiceValue();
@@ -150,6 +140,51 @@ void AIPlayer::think(color & c_piece, int & id_piece, int & dice) const{
 
     
 }
+
+int ValoracionDadoEspecial(int powerbar, const Parchis &estado){
+    int valor; 
+
+    if(0 <= powerbar < 50){
+        //Movimiento rápido
+        valor = 7 + powerbar/7;
+        //Es conveniente agregar un bonus, ya que evade barreras
+    }else if(50 <= powerbar < 60 or 70 <= powerbar < 75){
+        //Concha Roja
+        //Depende de la posición de otras piezas
+        vector<Piece> fichas = ; 
+        valor = 1;
+
+    }else if(60 <= powerbar < 65){
+        //Boom
+        valor = 1;
+
+    }else if(65 <= powerbar < 70){
+        //Movimiento ultra rápido
+
+    }else if(75 <= powerbar < 80){
+        //movimiento bala
+
+    }else if(80 <= powerbar < 85){
+        //Catapum
+
+    }else if(85 <= powerbar < 90){
+        //Concha Azul 
+
+    }else if(90 <= powerbar < 95){
+        //BoomBoom
+
+    }else if(95 <= powerbar < 100){
+        //Movimiento estrella
+
+    }else if(powerbar == 100){
+        //Catapumchimpum
+
+    }
+
+    return valor;
+}
+
+
 
 
 
